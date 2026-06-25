@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DanCenter\RabbitTransport;
 
+use DanCenter\RabbitTransport\Console\RabbitMqSetupCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -35,7 +36,7 @@ final class RabbitTransportServiceProvider extends ServiceProvider
      *
      * Шаги:
      * 1. Публикует config-stub для переопределения приложением.
-     * 2. Регистрирует console-команды при запуске в консоли (setup — T1.4).
+     * 2. Регистрирует console-команду настройки топологии RabbitMQ.
      */
     public function boot(): void
     {
@@ -44,8 +45,9 @@ final class RabbitTransportServiceProvider extends ServiceProvider
         ], 'rabbit-transport-config');
 
         if ($this->app->runningInConsole()) {
-            // Команды пакета регистрируются здесь по мере переноса (T1.4).
-            $this->commands([]);
+            $this->commands([
+                RabbitMqSetupCommand::class,
+            ]);
         }
     }
 }
