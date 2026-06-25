@@ -33,7 +33,52 @@ php artisan vendor:publish --tag=rabbit-transport-config
 ```
 
 Then declare the inbound registry, outbound events, and setup topology in
-`config/rabbit-transport.php`. The wire contract preserves two tokens:
+`config/rabbit-transport.php`.
 
-- per-message **routing key** (e.g. `crm.audit.{table}.{event}`), set by the sender;
-- the message body field **`name`** (e.g. `AUDIT_RECORDED`), used by the consumer to dispatch.
+## Wire contract (two independent tokens)
+
+The decoupling from application enums preserves both tokens exactly:
+
+| Token | Where it lives | Example | Used for |
+|-------|----------------|---------|----------|
+| (a) routing key | `publish()` arg, or `outbound` default | `crm.audit.{table}.{event}` | AMQP topic routing |
+| (b) body `name` | `RabbitMessageDTO->name` | `AUDIT_RECORDED` | consumer dispatch via `inbound` registry |
+
+The event **name** (`AUDIT_RECORDED`, token b) is **not** the routing key
+(`crm.audit.recorded`, token a). In the former `OutboundEventsEnum` these were
+`enum->name` and `enum->value`; here they are split explicitly.
+
+### Consuming app config example
+
+```php
+// config/rabbit-transport.php
+return [
+    'connection' => 'rabbitmq_inbox',
+
+    // token (b): body `name` → handler
+    'inbound' => [
+        'AUDIT_RECORDED' => [\App\Services\Audit\AuditInboxService::class, 'upsert'],
+    ],
+
+    // token (a) default: logical name → routing key (per-message arg wins)
+    'outbound' => [
+        'AUDIT_RECORDED' => 'crm.audit.recorded',
+    ],
+
+    'setup' => [
+        'exchange' => 'application.events',
+        'exchange_type' => 'topic',
+        'queue' => 'crm.inbox',
+        'bindings' => ['crm.inbox', 'crm.audit.#'],
+    ],
+];
+```
+
+### Publishing
+
+```php
+$publisher->publish(
+    new RabbitMessageDTO(name: 'AUDIT_RECORDED', data: $payload),
+    routingKey: "crm.audit.{$table}.{$event}", // token (a), per-message
+);
+```

@@ -11,11 +11,27 @@ declare(strict_types=1);
 | «событие → обработчик», исходящие события и топология exchange/queue
 | объявляются приложением здесь (публикуется как config/rabbit-transport.php).
 |
-| Заполняется по мере переноса (T1.2–T1.4):
-|  - connection  — имя queue-connection из config/queue.php (T1.2);
-|  - inbound     — реестр входящих событий event-name → [Class, Method] (T1.3);
-|  - outbound    — исходящие события name → routing key (T1.3);
-|  - setup       — топология exchange/queue/bindings для setup-команды (T1.4).
+| Секции:
+|  - connection  — имя queue-connection из config/queue.php;
+|  - inbound     — реестр входящих событий event-name → [Class, Method];
+|  - outbound    — исходящие события name → дефолтный routing key;
+|  - setup       — топология exchange/queue/bindings для setup-команды.
+|
+| --------------------------------------------------------------------------
+| WIRE-КОНТРАКТ (два независимых токена — сохраняются при развязке от enum):
+| --------------------------------------------------------------------------
+| (а) per-message ROUTING KEY — например `crm.audit.{table}.{event}`.
+|     Генерируется отправителем и передаётся в RabbitMQPublisher::publish()
+|     вторым аргументом. Если аргумент пуст — publisher берёт дефолт из
+|     секции `outbound` по логическому имени события.
+| (б) поле тела `name` — логическое имя события, например `AUDIT_RECORDED`.
+|     Кладётся в тело сообщения через RabbitMessageDTO->name. Консьюмер
+|     диспетчеризует обработку по этому полю через реестр `inbound`.
+|
+| ВАЖНО: имя события (`name`, токен б) ≠ routing key (токен а). В старом
+| App\...\OutboundEventsEnum это были enum->name (AUDIT_RECORDED) и
+| enum->value (crm.audit.recorded) соответственно. Здесь они разнесены явно:
+| `name` живёт в DTO, дефолтный routing key — в секции `outbound`.
 |
 */
 
