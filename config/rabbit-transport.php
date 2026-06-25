@@ -33,6 +33,15 @@ return [
     'publish_confirm_timeout' => (float) env('RABBIT_TRANSPORT_CONFIRM_TIMEOUT', 5.0),
 
     /*
+    | Настройки консьюмера. release_delay — задержка (сек) перед повторной
+    | доставкой при ошибке обработки. Стратегию poison-сообщений
+    | (max-attempts/dead-letter) задаёт сервис-консьюмер (см. T3.4b).
+    */
+    'consumer' => [
+        'release_delay' => (int) env('RABBIT_TRANSPORT_RELEASE_DELAY', 20),
+    ],
+
+    /*
     | Реестр входящих событий (T1.3): имя события из тела сообщения (поле `name`)
     | → обработчик [class-string, method]. Консьюмер диспетчеризует по этому ключу.
     |
