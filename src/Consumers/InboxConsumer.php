@@ -15,8 +15,11 @@ use VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob;
  * Диспетчеризация выполняется через config-driven реестр
  * `rabbit-transport.inbound`: имя события (поле `name` в теле) → [Class, Method].
  * Пакет не ссылается на классы приложения — реестр объявляет приложение.
+ *
+ * Класс не помечен final: позволяет частичное мокирование job-контекстных
+ * методов (getRawBody/delete/release) в тестах пакета.
  */
-final class InboxConsumer extends RabbitMQJob
+class InboxConsumer extends RabbitMQJob
 {
     /**
      * Обрабатывает входящее сообщение из очереди.
