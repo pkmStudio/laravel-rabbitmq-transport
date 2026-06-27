@@ -9,7 +9,7 @@
         "illuminate/queue": "^12.0",
         "illuminate/console": "^12.0",
         "illuminate/contracts": "^12.0",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.3",
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.5 || ^15.0",
         "php-amqplib/php-amqplib": "^3.0"
     },
     "require-dev": {

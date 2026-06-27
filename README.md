@@ -29,7 +29,7 @@ The package is useful when several Laravel services communicate through RabbitMQ
 
 - PHP `^8.4`
 - Laravel components `^12.0`
-- `vladimir-yuldashev/laravel-queue-rabbitmq ^14.3`
+- `vladimir-yuldashev/laravel-queue-rabbitmq ^14.5 || ^15.0`
 - `php-amqplib/php-amqplib ^3.0`
 
 ## Installation
@@ -252,6 +252,116 @@ php artisan queue:work rabbitmq_inbox --queue=auditor.audit --sleep=1 --tries=3 
 ```
 
 For a Docker service, run the same command as the worker container command.
+
+## Laravel Horizon
+
+If a service uses Laravel Horizon, the queue connection can use the package Horizon-aware worker:
+
+```php
+use DanCenter\RabbitTransport\Consumers\InboxConsumer;
+use DanCenter\RabbitTransport\Workers\CustomRabbitMQQueue;
+
+'connections' => [
+    'rabbitmq_inbox' => [
+        'driver' => 'rabbitmq',
+        'queue' => env('RABBIT_TRANSPORT_QUEUE', 'vehicles.inbox'),
+        'hosts' => [
+            [
+                'host' => env('RABBITMQ_HOST', '127.0.0.1'),
+                'port' => env('RABBITMQ_PORT', 5672),
+                'user' => env('RABBITMQ_USER', 'guest'),
+                'password' => env('RABBITMQ_PASSWORD', 'guest'),
+                'vhost' => env('RABBITMQ_VHOST', '/'),
+            ],
+        ],
+        'options' => [
+            'queue' => [
+                'exchange' => env('RABBIT_TRANSPORT_EXCHANGE', 'application.events'),
+                'exchange_type' => env('RABBIT_TRANSPORT_EXCHANGE_TYPE', 'topic'),
+                'exchange_routing_key' => '',
+                'declare' => true,
+                'job' => InboxConsumer::class,
+                'prefetch_count' => (int) env('RABBITMQ_PREFETCH_COUNT', 10),
+            ],
+        ],
+        'worker' => CustomRabbitMQQueue::class,
+    ],
+],
+```
+
+Then add a Horizon supervisor for the inbox queue:
+
+```php
+'supervisor-inbox' => [
+    'connection' => 'rabbitmq_inbox',
+    'queue' => [env('RABBIT_TRANSPORT_QUEUE', 'vehicles.inbox')],
+    'balance' => 'auto',
+    'autoScalingStrategy' => 'time',
+    'maxProcesses' => (int) env('HORIZON_INBOX_MAX_PROCESSES', 1),
+    'tries' => 3,
+    'timeout' => 90,
+],
+```
+
+`CustomRabbitMQQueue` suppresses duplicate Horizon queue events for this driver. Services without Horizon should keep the default worker:
+
+```php
+'worker' => env('RABBITMQ_WORKER', 'default'),
+```
+
+## Application-level publisher service
+
+Keep domain/application code behind your own service or port, and inject `RabbitMQPublisher` only at the infrastructure edge.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Notifications;
+
+use DanCenter\RabbitTransport\DTOs\RabbitMessageDTO;
+use DanCenter\RabbitTransport\RabbitMQPublisher;
+
+final readonly class RabbitMqFileNotificationService
+{
+    public function __construct(
+        private RabbitMQPublisher $publisher,
+    ) {}
+
+    public function send(int $userId, string $path, int $filesCount = 1): bool
+    {
+        return $this->publisher->publish(
+            new RabbitMessageDTO(
+                name: 'FILE_EXPORTED',
+                data: [
+                    'user_id' => $userId,
+                    'path' => $path,
+                    'files_count' => $filesCount,
+                ],
+            ),
+            routingKey: 'vehicles.file.exported',
+        );
+    }
+}
+```
+
+The receiving service declares the handler and binding mask:
+
+```php
+'inbound' => [
+    'FILE_EXPORTED' => [App\Rabbit\Handlers\FileExportedHandler::class, 'handle'],
+],
+
+'setup' => [
+    'exchange' => 'application.events',
+    'exchange_type' => 'topic',
+    'queue' => 'filament.notifications',
+    'bindings' => [
+        'vehicles.file.#',
+    ],
+],
+```
 
 ## Retry and poison messages
 
