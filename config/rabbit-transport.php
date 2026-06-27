@@ -50,11 +50,14 @@ return [
 
     /*
     | Настройки консьюмера. release_delay — задержка (сек) перед повторной
-    | доставкой при ошибке обработки. Стратегию poison-сообщений
-    | (max-attempts/dead-letter) задаёт сервис-консьюмер (см. T3.4b).
+    | доставкой при ошибке обработки. max_attempts=0 сохраняет историческое
+    | поведение с бесконечным release. При max_attempts>0 poison_action
+    | определяет финальное действие: delete или dead_letter/fail.
     */
     'consumer' => [
         'release_delay' => (int) env('RABBIT_TRANSPORT_RELEASE_DELAY', 20),
+        'max_attempts' => (int) env('RABBIT_TRANSPORT_MAX_ATTEMPTS', 0),
+        'poison_action' => env('RABBIT_TRANSPORT_POISON_ACTION', 'delete'),
     ],
 
     /*
