@@ -40,18 +40,18 @@ When the package is published to Packagist:
 composer require dan-center/rabbit-transport:^1.0
 ```
 
-Before Packagist, add the GitHub repository as a Composer VCS repository in the consuming Laravel app:
+Before Packagist or before the first stable tag, add the GitHub repository as a Composer VCS repository in the consuming Laravel app:
 
 ```json
 {
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/dan-center/rabbit-transport"
+      "url": "https://github.com/pkmStudio/laravel-rabbitmq-transport"
     }
   ],
   "require": {
-    "dan-center/rabbit-transport": "^1.0"
+    "dan-center/rabbit-transport": "dev-master"
   }
 }
 ```
