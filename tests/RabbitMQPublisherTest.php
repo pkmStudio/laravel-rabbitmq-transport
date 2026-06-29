@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use DanCenter\RabbitTransport\DTOs\RabbitMessageDTO;
-use DanCenter\RabbitTransport\RabbitMQPublisher;
+use PkmStudio\RabbitTransport\DTOs\RabbitMessageDTO;
+use PkmStudio\RabbitTransport\RabbitMQPublisher;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 

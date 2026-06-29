@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport\Consumers;
+namespace PkmStudio\RabbitTransport\Consumers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;

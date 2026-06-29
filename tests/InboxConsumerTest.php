@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use DanCenter\RabbitTransport\Consumers\InboxConsumer;
-use DanCenter\RabbitTransport\Tests\Fixtures\HandlerSpy;
+use PkmStudio\RabbitTransport\Consumers\InboxConsumer;
+use PkmStudio\RabbitTransport\Tests\Fixtures\HandlerSpy;
 
 /**
  * Создаёт частичный мок InboxConsumer с подменёнными job-контекстными методами.

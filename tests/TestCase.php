@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport\Tests;
+namespace PkmStudio\RabbitTransport\Tests;
 
-use DanCenter\RabbitTransport\RabbitTransportServiceProvider;
+use PkmStudio\RabbitTransport\RabbitTransportServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 /**

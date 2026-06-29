@@ -1,8 +1,8 @@
-# dan-center/rabbit-transport
+# pkmstudio/rabbit-transport
 
 > Laravel package that adds a small, opinionated microservice transport layer on top of `vladimir-yuldashev/laravel-queue-rabbitmq`.
 
-`dan-center/rabbit-transport` keeps the excellent RabbitMQ queue driver from `vladimir-yuldashev/laravel-queue-rabbitmq`, but adds the missing application-level pieces for service-to-service communication:
+`pkmstudio/rabbit-transport` keeps the excellent RabbitMQ queue driver from `vladimir-yuldashev/laravel-queue-rabbitmq`, but adds the missing application-level pieces for service-to-service communication:
 
 - a publisher with RabbitMQ publisher confirms;
 - a stable wire DTO: `name + data`;
@@ -37,7 +37,7 @@ The package is useful when several Laravel services communicate through RabbitMQ
 When the package is published to Packagist:
 
 ```bash
-composer require dan-center/rabbit-transport:^1.0
+composer require pkmstudio/rabbit-transport:^1.0
 ```
 
 Before Packagist or before the first stable tag, add the GitHub repository as a Composer VCS repository in the consuming Laravel app:
@@ -51,7 +51,7 @@ Before Packagist or before the first stable tag, add the GitHub repository as a 
     }
   ],
   "require": {
-    "dan-center/rabbit-transport": "dev-master"
+    "pkmstudio/rabbit-transport": "dev-master"
   }
 }
 ```
@@ -68,7 +68,7 @@ For local development with a sibling package:
     }
   ],
   "require": {
-    "dan-center/rabbit-transport": "@dev"
+    "pkmstudio/rabbit-transport": "@dev"
   }
 }
 ```
@@ -84,7 +84,7 @@ php artisan vendor:publish --tag=rabbit-transport-config
 Configure a RabbitMQ queue connection in `config/queue.php`. The important part is the custom job class:
 
 ```php
-use DanCenter\RabbitTransport\Consumers\InboxConsumer;
+use PkmStudio\RabbitTransport\Consumers\InboxConsumer;
 
 'connections' => [
     'rabbitmq_inbox' => [
@@ -180,8 +180,8 @@ The consumer dispatches only by body `name`. RabbitMQ routes only by routing key
 The same message can be published with a specific routing key:
 
 ```php
-use DanCenter\RabbitTransport\DTOs\RabbitMessageDTO;
-use DanCenter\RabbitTransport\RabbitMQPublisher;
+use PkmStudio\RabbitTransport\DTOs\RabbitMessageDTO;
+use PkmStudio\RabbitTransport\RabbitMQPublisher;
 
 app(RabbitMQPublisher::class)->publish(
     new RabbitMessageDTO(
@@ -204,7 +204,7 @@ Handlers are declared by the consuming application, not by the package:
 ```php
 'inbound' => [
     'ORDER_CREATED' => [App\Services\Orders\OrderCreatedConsumer::class, 'handle'],
-    'AUDIT_RECORDED' => [DanCenter\Audit\Services\AuditInboxService::class, 'upsert'],
+    'AUDIT_RECORDED' => [PkmStudio\Audit\Services\AuditInboxService::class, 'upsert'],
 ],
 ```
 
@@ -258,8 +258,8 @@ For a Docker service, run the same command as the worker container command.
 If a service uses Laravel Horizon, the queue connection can use the package Horizon-aware worker:
 
 ```php
-use DanCenter\RabbitTransport\Consumers\InboxConsumer;
-use DanCenter\RabbitTransport\Workers\CustomRabbitMQQueue;
+use PkmStudio\RabbitTransport\Consumers\InboxConsumer;
+use PkmStudio\RabbitTransport\Workers\CustomRabbitMQQueue;
 
 'connections' => [
     'rabbitmq_inbox' => [
@@ -320,8 +320,8 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
-use DanCenter\RabbitTransport\DTOs\RabbitMessageDTO;
-use DanCenter\RabbitTransport\RabbitMQPublisher;
+use PkmStudio\RabbitTransport\DTOs\RabbitMessageDTO;
+use PkmStudio\RabbitTransport\RabbitMQPublisher;
 
 final readonly class RabbitMqFileNotificationService
 {
@@ -411,7 +411,7 @@ git push origin v1.0.0
 Consuming apps can then run:
 
 ```bash
-composer update dan-center/rabbit-transport
+composer update pkmstudio/rabbit-transport
 ```
 
 ## License

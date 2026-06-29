@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport\Workers;
+namespace PkmStudio\RabbitTransport\Workers;
 
 use VladimirYuldashev\LaravelQueueRabbitMQ\Horizon\RabbitMQQueue;
 

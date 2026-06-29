@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport\Tests\Fixtures;
+namespace PkmStudio\RabbitTransport\Tests\Fixtures;
 
 use RuntimeException;
 

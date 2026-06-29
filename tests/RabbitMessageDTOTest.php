@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use DanCenter\RabbitTransport\DTOs\RabbitMessageDTO;
+use PkmStudio\RabbitTransport\DTOs\RabbitMessageDTO;
 
 test('DTO сериализует логическое имя события в поле name (токен б wire-контракта)', function (): void {
     $dto = new RabbitMessageDTO(name: 'AUDIT_RECORDED', data: ['k' => 'значение']);

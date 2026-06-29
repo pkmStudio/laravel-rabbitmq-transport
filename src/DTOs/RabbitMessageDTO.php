@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport\DTOs;
+namespace PkmStudio\RabbitTransport\DTOs;
 
 use JsonSerializable;
 

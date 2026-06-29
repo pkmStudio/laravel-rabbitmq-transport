@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport\Console;
+namespace PkmStudio\RabbitTransport\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Queue;

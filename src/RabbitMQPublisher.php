@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport;
+namespace PkmStudio\RabbitTransport;
 
-use DanCenter\RabbitTransport\DTOs\RabbitMessageDTO;
+use PkmStudio\RabbitTransport\DTOs\RabbitMessageDTO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 

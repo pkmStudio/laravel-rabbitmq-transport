@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DanCenter\RabbitTransport;
+namespace PkmStudio\RabbitTransport;
 
-use DanCenter\RabbitTransport\Console\RabbitMqSetupCommand;
+use PkmStudio\RabbitTransport\Console\RabbitMqSetupCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**

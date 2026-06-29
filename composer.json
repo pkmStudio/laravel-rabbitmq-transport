@@ -1,5 +1,5 @@
 {
-    "name": "dan-center/rabbit-transport",
+    "name": "pkmstudio/rabbit-transport",
     "description": "Generic AMQP/RabbitMQ transport for Laravel: publisher with confirms, config-driven inbox consumer and event→handler registry, optional Horizon worker.",
     "type": "library",
     "license": "proprietary",
@@ -21,18 +21,18 @@
     },
     "autoload": {
         "psr-4": {
-            "DanCenter\\RabbitTransport\\": "src/"
+            "PkmStudio\\RabbitTransport\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DanCenter\\RabbitTransport\\Tests\\": "tests/"
+            "PkmStudio\\RabbitTransport\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "DanCenter\\RabbitTransport\\RabbitTransportServiceProvider"
+                "PkmStudio\\RabbitTransport\\RabbitTransportServiceProvider"
             ]
         }
     },
